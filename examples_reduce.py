@@ -28,21 +28,23 @@ def loop_of_loops():
     return G
 
 def run_random_cubic_ex():
-    H = nx.random_regular_graph(3, 64)
+    H = nx.random_regular_graph(3, 50)
     G = subdivide(H, 1)
     W = weierstrass_locus(G)
 
-    pos_H = nx.kamada_kawai_layout(H, dim=3)
+    pos_H = nx.kamada_kawai_layout(H, dim=2)
     pos = nx.spring_layout(
         G, pos=pos_H, fixed=pos_H.keys(), 
-        k=0.005, dim=3
+        k=0.005, dim=2
     )
 
     node_color = []
     for v in G.nodes():
-        if W[v] > 0: node_color.append("tab:red")
-        else: node_color.append("gray")
-    create_3d_plot(G, pos, W, node_color)
+        if W[v] > 0: node_color.append((1,0.2,0.2,0.8))
+        else: node_color.append((0.8,0.8,0.8,0.8))
+    nx.draw(G, pos, labels=W, node_color=node_color)
+    plt.show()
+    # create_3d_plot(G, pos, W, node_color)
 
 def run_tent_example():
     G = tent_graph()
@@ -266,4 +268,4 @@ def create_2d_plot(G, labels, node_color):
     plt.show()
 
 if __name__ ==  "__main__":
-    run_random_cubic_ex()
+    run_frucht_3d()

@@ -163,9 +163,9 @@ class ReducibleGraphWidget:
 if __name__ ==  "__main__":
 
     H = nx.frucht_graph()
-    pos_H = nx.kamada_kawai_layout(H)
+    pos_H = nx.spring_layout(H, seed=52)
     G = subdivide(H, 7)
-    pos = nx.spring_layout(G, k=0.005, pos=pos_H, fixed=pos_H.keys())
+    pos = nx.spring_layout(G, k=0.015, pos=pos_H, fixed=pos_H.keys())
 
     widget = ReducibleGraphWidget(G, pos)
     widget.draw()

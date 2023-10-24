@@ -3,12 +3,13 @@ Implement Dhar's burning algorithm for finding reduced representative
 in divisor class
 """
 
+from collections import Counter
 import networkx as nx
 
 def canonical_div(G):
-    # returns canonical divisor of G, as a dictionary
+    # returns canonical divisor of G, as a Counter object
     # G = networkx graph
-    K = {}
+    K = Counter()
     for v in G.nodes():
         K[v] = G.degree[v] - 2
     return K
@@ -45,48 +46,49 @@ def chip_firing(G, red_K, noFire, frontier):
 def set_fire(G, D, q):
     """
     returns (bool, NoFire, frontier) where
-      bool = whether fire spread to whole graph
+      bool = whether fire has spread to whole graph
       NoFire = subgraph of G which is not on fire
       frontier = boundary of NoFire
     G = networkx graph, D = divisor on V(G), q = vertex of G
     """
     # initialize "fire" and "no fire" subgraphs
-    Fire = nx.Graph()
-    NoFire = G.copy()
+    fire = nx.Graph()
+    no_fire = G.copy()
     # set q on fire, spread to q-edges
-    Fire.add_node(q)
-    Fire.add_edges_from(G.edges(q))
-    NoFire.remove_node(q)
+    fire.add_node(q)
+    fire.add_edges_from(G.edges(q))
+    no_fire.remove_node(q)
     # initialize "frontier" = boundary between fire and no-fire
     frontier = list(G.adj[q])
     # spread fire to undefended vertices
     while True:
         # print("frontier: ", frontier)
+        # fire_defended = False if fire spreads past firefighters
         fire_defended = True
         next_frontier = frontier.copy()
         for v in frontier:
-            # compute number of incoming fires
-            fire_count = Fire.degree[v]
-            if fire_count > D[v]:
-                # set neighbors on fire
+            # Fire.degree[v] = number of incoming fires
+            # D[v] = number of defending firefighters
+            if fire.degree[v] > D[v]:
+                # set neighbors on fire, fire spreads
                 fire_defended = False
                 next_frontier.remove(v)
                 # print("testing vertex ", v)
                 # print("add nodes to frontier: ", list(NoFire.adj[v]))
-                for w in NoFire.adj[v]:
+                for w in no_fire.adj[v]:
                     if not (w in next_frontier): next_frontier.append(w)
                 # next_frontier = [*next_frontier, *(NoFire.adj[v])]
-                NoFire.remove_node(v)
-                Fire.add_edges_from(G.edges(v))
+                no_fire.remove_node(v)
+                fire.add_edges_from(G.edges(v))
         # print("next frontier: ", next_frontier)
         frontier = next_frontier
         if len(frontier) == 0: 
             # print("empty frontier")
-            return (True, Fire, [])
+            return (True, fire, [])
         if fire_defended:
             # print("fire defended")
             # apply chip firing move towards fire
-            return (False, NoFire, frontier)
+            return (False, no_fire, frontier)
 
 def q_effective_rep(G, D, q):
     # G = networkx graph, D = divisor on V(G), q = vertex of G
