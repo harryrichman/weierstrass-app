@@ -6,11 +6,18 @@ representative of the canonical divisor at that vertex.
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
+import numpy as np
 from reduce import *
 from weierstrass import *
 from utils import *
 
 class ReducibleGraphWidget:
+    """
+    Attributes:
+        self.G = networkx graph
+        self.W = Weierstrass locus of G
+        self.pos = position coordinates
+    """
     def __init__(self, G, pos):
         self.G = G
         self.pos = pos
@@ -33,15 +40,19 @@ class ReducibleGraphWidget:
         fig, ax = plt.subplots()
         self.ax = ax
         ax.set_title('Click on vertex to reduce canonical divisor')
+
         # adjust the main plot to make room for the sliders
         fig.subplots_adjust(bottom=0.15)
+
         # Create a `matplotlib.widgets.Button` to reset
         ax_reset = fig.add_axes([0.6, 0.025, 0.3, 0.04])
         self.r_button = Button(
             ax_reset, 'Reduced divisor (reset)', hovercolor='0.975')
         ax_weier = fig.add_axes([0.15, 0.025, 0.25, 0.04])
+
         self.w_button = Button(
             ax_weier, 'Weierstrass locus', hovercolor='0.975')
+        
         # transpose array 'pos' using zip
         xs, ys = zip(*[pos[v] for v in G.nodes()])
         # plot points with picker event option
@@ -162,10 +173,93 @@ class ReducibleGraphWidget:
 
 if __name__ ==  "__main__":
 
-    H = nx.frucht_graph()
-    pos_H = nx.spring_layout(H, seed=52)
-    G = subdivide(H, 7)
-    pos = nx.spring_layout(G, k=0.015, pos=pos_H, fixed=pos_H.keys())
+    # H = nx.frucht_graph()
+    adj_mat = np.array([
+        [0,1,1,0,0,0,0,0,0,0],
+        [1,0,1,1,0,0,0,0,0,0],
+        [1,1,0,0,1,0,0,0,0,0],
+        [0,1,0,0,0,1,0,0,0,0],
+        [0,0,1,0,0,1,1,0,0,0],
+        [0,0,0,1,1,0,0,1,0,0],
+        [0,0,0,0,1,0,0,0,1,0],
+        [0,0,0,0,0,1,0,0,1,1],
+        [0,0,0,0,0,0,1,1,0,1],
+        [0,0,0,0,0,0,0,1,1,0]
+    ])
+    adj_mat = np.array(
+        [[0,1,1,0,0,0,0,0,0,0,0,0,0],
+         [1,0,1,1,0,0,0,0,0,0,0,0,0],
+         [1,1,0,0,1,0,0,0,0,0,0,0,0],
+         [0,1,0,0,0,0,0,0,0,0,1,0,0],
+         [0,0,1,0,0,0,0,0,0,0,0,1,1],
+         [0,0,0,0,0,0,0,1,0,0,1,0,1],
+         [0,0,0,0,0,0,0,0,1,0,0,1,0],
+         [0,0,0,0,0,1,0,0,1,1,0,0,0],
+         [0,0,0,0,0,0,1,1,0,1,0,0,0],
+         [0,0,0,0,0,0,0,1,1,0,0,0,0],
+         [0,0,0,1,0,1,0,0,0,0,0,0,0],
+         [0,0,0,0,1,0,1,0,0,0,0,0,0],
+         [0,0,0,0,1,1,0,0,0,0,0,0,0]]
+    )
+    adj_mat = np.array(
+        [[0,1,1,0,0,0,0,0,0,0,0,0,0,0],
+         [1,0,1,1,0,0,0,0,0,0,0,0,0,0],
+         [1,1,0,0,1,0,0,0,0,0,0,0,0,0],
+         [0,1,0,0,0,0,0,0,0,0,1,0,0,0],
+         [0,0,1,0,0,0,0,0,0,0,0,1,1,0],
+         [0,0,0,0,0,0,0,1,0,0,1,0,0,1],
+         [0,0,0,0,0,0,0,0,1,0,0,1,0,0],
+         [0,0,0,0,0,1,0,0,1,1,0,0,0,0],
+         [0,0,0,0,0,0,1,1,0,1,0,0,0,0],
+         [0,0,0,0,0,0,0,1,1,0,0,0,0,0],
+         [0,0,0,1,0,1,0,0,0,0,0,0,0,0],
+         [0,0,0,0,1,0,1,0,0,0,0,0,0,0],
+         [0,0,0,0,1,0,0,0,0,0,0,0,0,1],
+         [0,0,0,0,0,1,0,0,0,0,0,0,1,0]]
+    )
+    edge_list = [()]
+    # H = nx.from_numpy_array(adj_mat)
+    adj_dict = {
+        0: (1, 2),
+        1: (0, 2, 3),
+        2: (0, 1, 4),
+        3: (1,5, 12),
+        4: (2,6),
+        5: (3,7),
+        6: (4,8),
+        7: (5,9),
+        8: (6,10, 13),
+        9: (7,10, 11),
+        10: (8,9, 11),
+        11: (9, 10),
+        12: (3, 13),
+        13: (12, 8),
+    }
+    H = nx.Graph(adj_dict)
+    pos_H = {
+        0: (-1,1),
+        1: (0,0),
+        2: (0,2),
+        3: (1,0),
+        4: (1,2),
+        5: (2,0),
+        6: (2,2),
+        7: (3,0),
+        8: (3,2),
+        9: (4,0),
+        10: (4,2),
+        11: (5,1),
+        12: (1.7,0.7),
+        13: (2.3,1.3),
+    }
+    # pos_H = nx.spring_layout(H, seed=52)
+    G = subdivide(H, 40)
+    # pos = nx.spring_layout(G, k=0.015, pos=pos_H, fixed=pos_H.keys())
+    pos = nx.spring_layout(
+        G, pos=pos_H, fixed=pos_H.keys(),
+        k=0.018, 
+        iterations=2000,
+    )
 
     widget = ReducibleGraphWidget(G, pos)
     widget.draw()
