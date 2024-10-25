@@ -7,16 +7,22 @@ from collections import Counter
 import networkx as nx
 
 def canonical_div(G):
-    # returns canonical divisor of G, as a Counter object
-    # G = networkx graph
+    """
+    returns canonical divisor of G, as a Counter object
+    G = networkx graph
+    """
     K = Counter()
     for v in G.nodes():
         K[v] = G.degree[v] - 2
     return K
 
 def reduce_canonical(G, q):
-    # returns reduced representative of K(G) at q
-    # G = networkx graph, q = vertex of G
+    """
+    returns reduced representative of K(G) at q
+    Args:
+        G = networkx graph
+        q = vertex of G
+    """
     red_K = canonical_div(G)
     # check that q is a vertex of G
     if not (q in G.nodes()):
@@ -29,10 +35,17 @@ def reduce_canonical(G, q):
             # print("before div:", red_K)
             chip_firing(G, red_K, noFire, frontier)
             # print("after div:", red_K)
-        else: break
-    return red_K
+        else:
+            return red_K
 
 def chip_firing(G, red_K, noFire, frontier):
+    """
+    Arguments:
+        G = networkx graph
+        red_K = 
+        noFire = subgraph of G where ...
+        frontier = list of vertices of G
+    """
     # WARNING: modifies red_K in place
     # print("  fire chips on ", NoFire.nodes())
     # print("  with frontier", frontier)
@@ -48,7 +61,7 @@ def set_fire(G, D, q):
     returns (bool, NoFire, frontier) where
       bool = whether fire has spread to whole graph
       NoFire = subgraph of G which is not on fire
-      frontier = boundary of NoFire
+      frontier = boundary of NoFire, as list of vertices
     G = networkx graph, D = divisor on V(G), q = vertex of G
     """
     # initialize "fire" and "no fire" subgraphs
@@ -91,6 +104,11 @@ def set_fire(G, D, q):
             return (False, no_fire, frontier)
 
 def q_effective_rep(G, D, q):
-    # G = networkx graph, D = divisor on V(G), q = vertex of G
-    # returns representative in [D] effective away from q
+    """
+    returns representative in [D] effective away from q
+    Arguments:
+        G = networkx graph, 
+        D = divisor on V(G), 
+        q = vertex of G
+    """
     pass
