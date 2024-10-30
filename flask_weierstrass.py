@@ -11,3 +11,7 @@ app = Flask(__name__)
 def hello_world():
     # return "<p>Hello, world!</p>"
     return render_template("index.html")
+
+@app.route("/get-divisor", methods=["POST"])
+def get_divisor():
+    pass
