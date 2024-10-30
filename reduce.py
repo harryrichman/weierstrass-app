@@ -71,6 +71,7 @@ def set_fire(G, D, q):
     fire.add_node(q)
     fire.add_edges_from(G.edges(q))
     no_fire.remove_node(q)
+    
     # initialize "frontier" = boundary between fire and no-fire
     frontier = list(G.adj[q])
     # spread fire to undefended vertices

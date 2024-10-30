@@ -48,7 +48,7 @@ def run_random_cubic_ex():
 
 def run_tent_example():
     G = tent_graph()
-    #G = nx.frucht_graph()
+    # G = nx.frucht_graph()
     W = weierstrass_locus(G)
 
     print(W)
@@ -84,7 +84,7 @@ def run_loop_of_loops_example():
 
 def run_frucht_example():
     G = nx.frucht_graph()
-    #G = nx.random_geometric_graph(20, 0.225, seed=89)
+    # G = nx.random_geometric_graph(20, 0.225, seed=89)
 
     # produce graph options
     def make_options(G, q):

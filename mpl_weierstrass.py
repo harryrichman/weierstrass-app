@@ -253,7 +253,7 @@ if __name__ ==  "__main__":
         13: (2.3,1.3),
     }
     # pos_H = nx.spring_layout(H, seed=52)
-    G = subdivide(H, 40)
+    G = subdivide(H, 4)
     # pos = nx.spring_layout(G, k=0.015, pos=pos_H, fixed=pos_H.keys())
     pos = nx.spring_layout(
         G, pos=pos_H, fixed=pos_H.keys(),
