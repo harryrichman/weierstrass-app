@@ -49,7 +49,7 @@
         <script type="text/javascript">
           // create an array with nodes
           var frucht_nodes = new vis.DataSet([
-            { id: 1, label: "1", title: "I have a popup!", color: "red" },
+            { id: 1, label: "1", title: "I have a popup!" },
             { id: 2, label: "2", title: "I have a popup!" },
             { id: 3, label: "3", title: "I have a popup!" },
             { id: 4, label: "4", title: "I have a popup!" },
@@ -93,9 +93,38 @@
           };
     
           var options = {
+            nodes: {
+              shape: "dot",
+              size: 6,
+              color: {
+                border: "DarkGray",
+                background: "LightGray",
+                highlight: {
+                  background: "#ff8888",
+                  border: "#ff0000",
+                },
+              },
+            },
+            edges: {
+              color: "null",
+            },
             interaction: { hover: true },
             manipulation: {
               enabled: true,
+              controlNodeStyle: {
+                shape:'dot',
+                size:6,
+                color: {
+                  background: '#000000',
+                  border: '#3c3c3c',
+                  highlight: {
+                    background: '#000000',
+                    border: '#3c3c3c'
+                  }
+                },
+                borderWidth: 2,
+                borderWidthSelected: 2
+              },
             },
           };
     
@@ -108,13 +137,14 @@
           });
 
           function defaultColors() {
-            console.log("runing default colors fn")
+            console.log("running default colors fn")
             for (let i = 1; i <= frucht_nodes.length; i++) {
               var node = frucht_nodes.get(i);
               node.color = {
-                border: "LightGray",
+                border: "DarkGray",
                 background: "LightGray",
               };
+              node.label = "0",
               frucht_nodes.update(node)
             }
           }
@@ -126,6 +156,7 @@
               border: "red",
               background: "red",
             }
+            selected_node.label = "1",
             frucht_nodes.update(selected_node)
           }
       </script>
