@@ -1,6 +1,6 @@
 """
 Implement Dhar's burning algorithm for finding reduced representative 
-in divisor class
+of an (effective) divisor on a graph
 """
 
 from collections import Counter
