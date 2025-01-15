@@ -27,8 +27,77 @@ def loop_of_loops():
     )
     return G
 
-def run_random_cubic_ex():
-    H = nx.random_regular_graph(3, 50)
+def frucht_graph(var=0):
+    """
+    returns one of the five asymmetric cubic graphs on 12 vertices
+    """
+    if var == 0:
+        return nx.frucht_graph()
+    else:
+        if var == 1:
+            adjacency_dict = {
+                1: [2, 8, 12],
+                2: [3, 12],
+                3: [4, 11],
+                4: [5, 10],
+                5: [6, 7],
+                6: [7, 9],
+                7: [8],
+                8: [9],
+                9: [10],
+                10: [11],
+                11: [12]
+            }
+            ## debug
+            # adjacency_dict = {1: [5, 2], 2: [5, 6]}
+        elif var == 2:
+            adjacency_dict = {
+                1: [2, 5, 12],
+                2: [3, 6],
+                3: [4, 9],
+                4: [5, 7],
+                5: [6],
+                6: [7],
+                7: [8],
+                8: [9, 11],
+                9: [10],
+                10: [11, 12],
+                11: [12]
+            }
+        elif var == 3:
+            adjacency_dict = {
+                1: [2, 7, 12],
+                2: [3, 11],
+                3: [4, 9],
+                4: [5, 10],
+                5: [6, 12],
+                6: [7, 8],
+                7: [8],
+                8: [9],
+                9: [10],
+                10: [11],
+                11: [12]
+            }
+        elif var == 4:
+            adjacency_dict = {
+                1: [2, 7, 12],
+                2: [3, 6],
+                3: [4, 9],
+                4: [5, 11],
+                5: [6, 8],
+                6: [7],
+                7: [8],
+                8: [9],
+                9: [10],
+                10: [11, 12],
+                11: [12]
+            }
+        else:
+            raise ValueError
+        return nx.Graph(adjacency_dict)
+
+def run_random_cubic_ex(g=22):
+    H = nx.random_regular_graph(3, 2*g - 2)
     G = subdivide(H, 1)
     W = weierstrass_locus(G)
 
@@ -144,9 +213,10 @@ def run_frucht_example():
     nx.draw(G, pos, **options)
     plt.show()
 
-def run_frucht_3d():
-    H = nx.frucht_graph()
-    G = subdivide(H, 6)
+def run_frucht_3d(var=0):
+    # H = nx.frucht_graph()
+    H = frucht_graph(var=var)
+    G = subdivide(H, 7)
     W = weierstrass_locus(G)
     node_color = []
     for v in G.nodes():
@@ -268,4 +338,5 @@ def create_2d_plot(G, labels, node_color):
     plt.show()
 
 if __name__ ==  "__main__":
-    run_frucht_3d()
+    # run_frucht_3d(var=0)
+    run_random_cubic_ex(g=8)
