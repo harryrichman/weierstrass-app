@@ -261,6 +261,22 @@ if __name__ ==  "__main__":
         iterations=2000,
     )
 
+    # H = nx.pappus_graph()
+    # G = subdivide(H, 6)
+    # pos = nx.spring_layout(G)
+
+    # H = nx.heawood_graph()
+    # G = subdivide(H, 6)
+    # pos = nx.spring_layout(G)
+    
+    # H = nx.desargues_graph()
+    # G = subdivide(H, 6)
+    # pos = nx.spring_layout(G)
+
+    H = nx.tutte_graph()
+    G = subdivide(H, 6)
+    pos = nx.spring_layout(G)
+
     widget = ReducibleGraphWidget(G, pos)
     widget.draw()
     widget.connect()

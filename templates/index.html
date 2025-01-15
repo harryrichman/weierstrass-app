@@ -1,9 +1,11 @@
-<html>
+<!DOCTYPE html>
   <head>
     <title>Weierstrass point calculator</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://harryrichman.github.io/main.css"/>
-    <script src="weierstrass.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <!-- <script src="../weierstrass.js"></script> -->
+    <script src="{{ url_for('static', filename='weierstrass.js') }}" defer></script>
     <style>
         #force-graph {
             width: 600px;
@@ -22,8 +24,8 @@
     
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <script src="https://unpkg.com/force-graph@1.43.4/dist/force-graph.min.js"></script>
-    <script src="https://unpkg.com/d3-force@3.0.0/dist/d3-force.min.js"></script>
+    <!-- <script src="https://unpkg.com/force-graph@1.43.4/dist/force-graph.min.js"></script>
+    <script src="https://unpkg.com/d3-force@3.0.0/dist/d3-force.min.js"></script> -->
 
     <script
       type="text/javascript"
@@ -130,12 +132,6 @@
     
           var network = new vis.Network(container, frucht_data, options);
 
-          network.on("selectNode", function (params) {
-            console.log("selectNode Event:", params);
-            defaultColors();
-            colorNode(params);
-          });
-
           function defaultColors() {
             console.log("running default colors fn")
             for (let i = 1; i <= frucht_nodes.length; i++) {
@@ -148,9 +144,7 @@
               frucht_nodes.update(node)
             }
           }
-          function colorNode(params) {
-            console.log(params.nodes);
-            const id = params.nodes[0];
+          function colorNode(id) {
             var selected_node = frucht_nodes.get(id)
             selected_node.color = {
               border: "red",
