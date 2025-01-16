@@ -1,3 +1,4 @@
+import random
 
 from reduce import *
 from weierstrass import *
@@ -96,7 +97,11 @@ def frucht_graph(var=0):
             raise ValueError
         return nx.Graph(adjacency_dict)
 
-def run_random_cubic_ex(g=22):
+def run_random_cubic_ex(g=22, seed=None):
+    # set random seed
+    if seed is not None:
+        random.seed(seed)
+
     (G, W, pos, node_color) = random_cubic_graph(g=g)
     nx.draw(G, pos, labels=W, node_color=node_color)
     plt.show()
@@ -194,7 +199,11 @@ def run_frucht_example(var=0):
 
     plt.show()
 
-def run_random_cubic_collage_ex(g=6):
+def run_random_cubic_collage_ex(g=6, seed=None):
+    # set random seed
+    if seed is not None:
+        random.seed(seed)
+
     for i in range(12):
         plt.subplot(3, 4, i+1)
         (G, W, pos, node_color) = random_cubic_graph(g=g)
@@ -328,5 +337,8 @@ def create_2d_plot(G, labels, node_color):
 if __name__ ==  "__main__":
     # run_frucht_3d(var=0)
     # run_random_cubic_ex(g=8)
-    run_random_cubic_collage_ex(g=7)
+    run_random_cubic_collage_ex(g=72, seed=42)
     # run_frucht_example(var=0)
+
+    ## WARNING: bug in output of the following:
+    # run_random_cubic_collage_ex(g=7, seed=120)
