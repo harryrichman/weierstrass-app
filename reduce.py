@@ -20,8 +20,8 @@ def reduce_canonical(G, q):
     """
     returns reduced representative of K(G) at q
     Args:
-        G = networkx graph
-        q = vertex of G
+        G: networkx graph
+        q: vertex of G
     """
     red_K = canonical_div(G)
     # check that q is a vertex of G
@@ -41,10 +41,10 @@ def reduce_canonical(G, q):
 def chip_firing(G, red_K, noFire, frontier):
     """
     Arguments:
-        G = networkx graph
-        red_K = 
-        noFire = subgraph of G where ...
-        frontier = list of vertices of G
+        G: networkx graph
+        red_K: current candidate for reduced divisor of (K,q)
+        noFire: subgraph of G where ...
+        frontier: list of vertices of G
     """
     # WARNING: modifies red_K in place
     # print("  fire chips on ", NoFire.nodes())
@@ -58,11 +58,15 @@ def chip_firing(G, red_K, noFire, frontier):
 
 def set_fire(G, D, q):
     """
+    Implements main loop of Dhar's burning algorithm.
+    args:
+        G: networkx graph
+        D: divisor on V(G)
+        q: vertex of G where we start a fire
     returns (bool, NoFire, frontier) where
-      bool = whether fire has spread to whole graph
-      NoFire = subgraph of G which is not on fire
-      frontier = boundary of NoFire, as list of vertices
-    G = networkx graph, D = divisor on V(G), q = vertex of G
+        bool: whether fire has spread to whole graph
+        NoFire: subgraph of G which is not on fire
+        frontier: boundary of NoFire, as list of vertices
     """
     # initialize "fire" and "no fire" subgraphs
     fire = nx.Graph()
