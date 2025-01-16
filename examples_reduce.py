@@ -36,8 +36,8 @@ def frucht_graph(var=0):
     else:
         if var == 1:
             adjacency_dict = {
-                1: [2, 8, 12],
-                2: [3, 12],
+                1: [2, 8, 0],
+                2: [3, 0],
                 3: [4, 11],
                 4: [5, 10],
                 5: [6, 7],
@@ -46,13 +46,13 @@ def frucht_graph(var=0):
                 8: [9],
                 9: [10],
                 10: [11],
-                11: [12]
+                11: [0]
             }
             ## debug
             # adjacency_dict = {1: [5, 2], 2: [5, 6]}
         elif var == 2:
             adjacency_dict = {
-                1: [2, 5, 12],
+                1: [2, 5, 0],
                 2: [3, 6],
                 3: [4, 9],
                 4: [5, 7],
@@ -61,26 +61,26 @@ def frucht_graph(var=0):
                 7: [8],
                 8: [9, 11],
                 9: [10],
-                10: [11, 12],
-                11: [12]
+                10: [11, 0],
+                11: [0]
             }
         elif var == 3:
             adjacency_dict = {
-                1: [2, 7, 12],
+                1: [2, 7, 0],
                 2: [3, 11],
                 3: [4, 9],
                 4: [5, 10],
-                5: [6, 12],
+                5: [6, 0],
                 6: [7, 8],
                 7: [8],
                 8: [9],
                 9: [10],
                 10: [11],
-                11: [12]
+                11: [0]
             }
         elif var == 4:
             adjacency_dict = {
-                1: [2, 7, 12],
+                1: [2, 7, 0],
                 2: [3, 6],
                 3: [4, 9],
                 4: [5, 11],
@@ -89,14 +89,27 @@ def frucht_graph(var=0):
                 7: [8],
                 8: [9],
                 9: [10],
-                10: [11, 12],
-                11: [12]
+                10: [11, 0],
+                11: [0]
             }
         else:
             raise ValueError
         return nx.Graph(adjacency_dict)
 
 def run_random_cubic_ex(g=22):
+    (G, W, pos, node_color) = random_cubic_graph(g=g)
+    nx.draw(G, pos, labels=W, node_color=node_color)
+    plt.show()
+    # create_3d_plot(G, pos, W, node_color)
+
+def random_cubic_graph(g=22):
+    """
+    Returns (G, W, pos, node_color) where
+        G: random cubic graph of specified genus
+        W: Weierstrass locus
+        pos: position data
+        node_color: node color data
+    """
     H = nx.random_regular_graph(3, 2*g - 2)
     G = subdivide(H, 1)
     W = weierstrass_locus(G)
@@ -111,9 +124,7 @@ def run_random_cubic_ex(g=22):
     for v in G.nodes():
         if W[v] > 0: node_color.append((1,0.2,0.2,0.8))
         else: node_color.append((0.8,0.8,0.8,0.8))
-    nx.draw(G, pos, labels=W, node_color=node_color)
-    plt.show()
-    # create_3d_plot(G, pos, W, node_color)
+    return (G, W, pos, node_color)
 
 def run_tent_example():
     G = tent_graph()
@@ -151,8 +162,8 @@ def run_loop_of_loops_example():
     nx.draw(G, pos, **options)
     plt.show()
 
-def run_frucht_example():
-    G = nx.frucht_graph()
+def run_frucht_example(var=0):
+    G = frucht_graph(var=var)
     # G = nx.random_geometric_graph(20, 0.225, seed=89)
 
     # produce graph options
@@ -175,42 +186,19 @@ def run_frucht_example():
 
     pos = nx.spring_layout(G, seed=52)
 
-    plt.subplot(341)
-    options = make_options(G, 2)
-    nx.draw(G, pos, **options)
-    plt.subplot(342)
-    options = make_options(G, 3)
-    nx.draw(G, pos, **options)
-    plt.subplot(343)
-    options = make_options(G, 9)
-    nx.draw(G, pos, **options)
-    plt.subplot(344)
-    options = make_options(G, 4)
-    nx.draw(G, pos, **options)
-    plt.subplot(345)
-    options = make_options(G, 1)
-    nx.draw(G, pos, **options)
-    plt.subplot(346)
-    options = make_options(G, 8)
-    nx.draw(G, pos, **options)
-    plt.subplot(347)
-    options = make_options(G, 11)
-    nx.draw(G, pos, **options)
-    plt.subplot(348)
-    options = make_options(G, 5)
-    nx.draw(G, pos, **options)
-    plt.subplot(349)
-    options = make_options(G, 7)
-    nx.draw(G, pos, **options)
-    plt.subplot(3, 4, 10)
-    options = make_options(G, 0)
-    nx.draw(G, pos, **options)
-    plt.subplot(3, 4, 11)
-    options = make_options(G, 6)
-    nx.draw(G, pos, **options)
-    plt.subplot(3, 4, 12)   
-    options = make_options(G, 10)
-    nx.draw(G, pos, **options)
+    for (i, q) in enumerate([2, 3, 9, 4, 1, 8, 11, 5, 7, 0, 6, 10]):
+        # strange order of vertex indices q chosen based on var=0 graph
+        plt.subplot(3, 4, i+1)
+        options = make_options(G, q)
+        nx.draw(G, pos, **options)
+
+    plt.show()
+
+def run_random_cubic_collage_ex(g=6):
+    for i in range(12):
+        plt.subplot(3, 4, i+1)
+        (G, W, pos, node_color) = random_cubic_graph(g=g)
+        nx.draw(G, pos, labels=W, node_color=node_color)
     plt.show()
 
 def run_frucht_3d(var=0):
@@ -339,4 +327,6 @@ def create_2d_plot(G, labels, node_color):
 
 if __name__ ==  "__main__":
     # run_frucht_3d(var=0)
-    run_random_cubic_ex(g=8)
+    # run_random_cubic_ex(g=8)
+    run_random_cubic_collage_ex(g=7)
+    # run_frucht_example(var=0)
