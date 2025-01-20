@@ -71,13 +71,16 @@ def set_fire(G, D, q):
     # initialize "fire" and "no fire" subgraphs
     fire = nx.Graph()
     no_fire = G.copy()
+    
     # set q on fire, spread to q-edges
     fire.add_node(q)
     fire.add_edges_from(G.edges(q))
     no_fire.remove_node(q)
     
-    # initialize "frontier" = boundary between fire and no-fire
+    # initialize "frontier" = boundary between fire and no-fire (i.e. intersection of
+    # vertex sets)
     frontier = list(G.adj[q])
+
     # spread fire to undefended vertices
     while True:
         # print("frontier: ", frontier)
@@ -88,7 +91,7 @@ def set_fire(G, D, q):
             # Fire.degree[v] = number of incoming fires
             # D[v] = number of defending firefighters
             if fire.degree[v] > D[v]:
-                # set neighbors on fire, fire spreads
+                # fire spreads past v, set neighbors on fire
                 fire_defended = False
                 next_frontier.remove(v)
                 # print("testing vertex ", v)
@@ -98,22 +101,23 @@ def set_fire(G, D, q):
                 # next_frontier = [*next_frontier, *(NoFire.adj[v])]
                 no_fire.remove_node(v)
                 fire.add_edges_from(G.edges(v))
-        # print("next frontier: ", next_frontier)
-        frontier = next_frontier
-        if len(frontier) == 0: 
-            # print("empty frontier")
-            return (True, fire, [])
         if fire_defended:
             # print("fire defended")
             # apply chip firing move towards fire
             return (False, no_fire, frontier)
+        # print("next frontier: ", next_frontier)
+        if len(next_frontier) == 0: 
+            # frontier is empty, so fire has spread to the whole graph
+            # print("empty frontier")
+            return (True, no_fire, [])
+        frontier = next_frontier
 
 def q_effective_rep(G, D, q):
     """
     returns representative in [D] effective away from q
-    Arguments:
-        G = networkx graph, 
-        D = divisor on V(G), 
-        q = vertex of G
+    Args:
+        G: networkx graph, 
+        D: divisor on V(G), 
+        q: vertex of G
     """
     pass

@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://harryrichman.github.io/main.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <!-- <script src="../weierstrass.js"></script> -->
+    <script src="{{ url_for('static', filename='graph_data.js') }}"></script>
     <script src="{{ url_for('static', filename='weierstrass.js') }}" defer></script>
     <style>
         #force-graph {
@@ -50,49 +51,42 @@
         <div id="visjs-network"></div>
         <script type="text/javascript">
           // create an array with nodes
-          var frucht_nodes = new vis.DataSet([
-            { id: 1, label: "1", title: "vertex 1" },
-            { id: 2, label: "2", title: "vertex 2" },
-            { id: 3, label: "3", title: "vertex 3" },
-            { id: 4, label: "4", title: "vertex 4" },
-            { id: 5, label: "5", title: "vertex 5" },
-            { id: 6, label: "6", title: "vertex 6" },
-            { id: 7, label: "7", title: "vertex 7" },
-            { id: 8, label: "8", title: "vertex 8" },
-            { id: 9, label: "9", title: "vertex 9" },
-            { id: 10, label: "10", title: "vertex 10" },
-            { id: 11, label: "11", title: "vertex 11" },
-            { id: 12, label: "12", title: "vertex 12" },
-          ]);
+          // const frucht_nodes = [
+          //   { id: 1, label: "1", title: "vertex 1" },
+          //   { id: 2, label: "2", title: "vertex 2" },
+          //   { id: 3, label: "3", title: "vertex 3" },
+          //   { id: 4, label: "4", title: "vertex 4" },
+          //   { id: 5, label: "5", title: "vertex 5" },
+          //   { id: 6, label: "6", title: "vertex 6" },
+          //   { id: 7, label: "7", title: "vertex 7" },
+          //   { id: 8, label: "8", title: "vertex 8" },
+          //   { id: 9, label: "9", title: "vertex 9" },
+          //   { id: 10, label: "10", title: "vertex 10" },
+          //   { id: 11, label: "11", title: "vertex 11" },
+          //   { id: 12, label: "12", title: "vertex 12" },
+          // ];
     
           // create an array with edges
-          var frucht_edges = new vis.DataSet([
-            { from: 1, to: 2, color: undefined },
-            { from: 2, to: 3 },
-            { from: 3, to: 4 },
-            { from: 4, to: 5 },
-            { from: 5, to: 6 },
-            { from: 6, to: 7 },
-            { from: 7, to: 1 },
-            { from: 1, to: 8 },
-            { from: 2, to: 8 },
-            { from: 3, to: 9 },
-            { from: 4, to: 9 },
-            { from: 5, to: 10 },
-            { from: 6, to: 10 },
-            { from: 7, to: 11 },
-            { from: 8, to: 11 },
-            { from: 9, to: 12 },
-            { from: 10, to: 12 },
-            { from: 11, to: 12 },
-          ]);
-    
-          // create a network
-          var container = document.getElementById("visjs-network");
-          var frucht_data = {
-            nodes: frucht_nodes,
-            edges: frucht_edges,
-          };
+          // const frucht_edges = [
+          //   { from: 1, to: 2, color: undefined },
+          //   { from: 2, to: 3 },
+          //   { from: 3, to: 4 },
+          //   { from: 4, to: 5 },
+          //   { from: 5, to: 6 },
+          //   { from: 6, to: 7 },
+          //   { from: 7, to: 1 },
+          //   { from: 1, to: 8 },
+          //   { from: 2, to: 8 },
+          //   { from: 3, to: 9 },
+          //   { from: 4, to: 9 },
+          //   { from: 5, to: 10 },
+          //   { from: 6, to: 10 },
+          //   { from: 7, to: 11 },
+          //   { from: 8, to: 11 },
+          //   { from: 9, to: 12 },
+          //   { from: 10, to: 12 },
+          //   { from: 11, to: 12 },
+          // ];
     
           var options = {
             nodes: {
@@ -130,54 +124,57 @@
             },
           };
     
-          var network = new vis.Network(container, frucht_data, options);
+          // create a network
+          var container = document.getElementById("visjs-network");
 
-          function defaultColors() {
-            console.log("running default colors fn")
-            for (let i = 1; i <= frucht_nodes.length; i++) {
-              var node = frucht_nodes.get(i);
-              node.color = {
-                border: "DarkGray",
-                background: "LightGray",
-              };
-              node.label = "0",
-              frucht_nodes.update(node)
-            }
-          }
-          function colorNode(id) {
-            var selected_node = frucht_nodes.get(id)
-            selected_node.color = {
-              border: "red",
-              background: "red",
-            }
-            selected_node.label = "1",
-            frucht_nodes.update(selected_node)
-          }
+          var visjs_nodes = new vis.DataSet(frucht_nodes);
+          var visjs_edges = new vis.DataSet(frucht_edges);
+          var visjs_data = {
+            nodes: visjs_nodes,
+            edges: visjs_edges,
+          };
+          var network = new vis.Network(container, visjs_data, options);
+
+
       </script>
     </section>      
 
-<!-- P8 interactive standard form -->
-<div class="interactive">
-  Enter an adjacency matrix of a connected graph.  
-  <p>
-    <label for="P8-input-V">Enter vertices of \(G\)</label></br>
-    <input id="P8-input-V" type="text" class="interactive-input" size="50" value="1, 2, 3, 4, 5, 6, 7, 8">
-  </p>
-  <div>
-    <label for="P8-input-E">Enter edges of \(G\)</label>
-
-    <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
-        >(1, 2), (2, 3), (1, 4), (4, 3), (1, 5), (3, 7), (5, 6), (6, 7), (5, 8), (8, 7)</textarea>
-  </div>
-  <button id="P8-submit" class="py-button" type="submit" py-click="p8()">Submit data</button>
-  <div id="P8-output" class="interactive-output hidden"></div>
-</div>
-
-
-<section>
-    <div id="mpl-graph">
+    <div>
+      <label for="graph-dropdown">Choose a graph:</label>
+      <select id="graph-dropdown" name="graphs" onchange="handleSelectionChange()">
+          <option value="frucht">Frucht graph</option>
+          <option value="pappus">Pappus graph</option>
+          <option value="triangle-prism">Triangle prism graph</option>
+          <option value="franklin">Franklin graph</option>
+          <option value="durer">Dürer graph</option>
+          <option value="bidiakis">Bidiakis cube graph</option>
+      </select>
+      
+      <p id="output"></p>
+  
     </div>
-</section>
+    
+    <!-- P8 interactive standard form -->
+    <div class="interactive">
+      Enter an adjacency matrix of a connected graph.  
+      <p>
+        <label for="P8-input-V">Enter vertices of \(G\)</label></br>
+        <input id="P8-input-V" type="text" class="interactive-input" size="50" value="1, 2, 3, 4, 5, 6, 7, 8">
+      </p>
+      <div>
+        <label for="P8-input-E">Enter edges of \(G\)</label>
+
+        <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
+            >(1, 2), (2, 3), (1, 4), (4, 3), (1, 5), (3, 7), (5, 6), (6, 7), (5, 8), (8, 7)</textarea>
+      </div>
+      <button id="P8-submit" class="py-button" type="submit" py-click="p8()">Submit data</button>
+      <div id="P8-output" class="interactive-output hidden"></div>
+    </div>
+
+    <section>
+        <div id="mpl-graph">
+        </div>
+    </section>
 
 
 
