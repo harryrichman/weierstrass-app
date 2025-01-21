@@ -97,6 +97,61 @@ def frucht_graph(var=0):
             raise ValueError
         return nx.Graph(adjacency_dict)
 
+def whitney_flip_pair(var=0):
+    """
+    constructs a pair of cubic graphs which differ by a Whitney flip.
+    both graphs have genus 9
+    """
+    adjacency_dict = {
+        1: [2, 4],
+        2: [3, 5],
+        3: [4, 5],
+        4: [6],
+        5: [7],
+        6: [7, 8],
+        7: [8],
+        9: [10, 12],
+        10: [11, 13],
+        11: [12, 13],
+        12: [14],
+        13: [15],
+        14: [15, 16],
+        15: [16]
+    }
+    G = nx.Graph(adjacency_dict)
+    if var == 0:
+        G.add_edges_from([(1, 16), (8, 9)])
+    elif var == 1:
+        G.add_edges_from([(1, 9), (8, 16)])
+    else:
+        raise ValueError
+    return G
+
+def run_whitney_flip_ex():
+    plt.subplot(1, 2, 1)
+    G = whitney_flip_pair(var=0)
+    W = weierstrass_locus(G)
+    # pos = nx.kamada_kawai_layout(G, dim=2)
+    pos = nx.spring_layout(G)
+    node_color = []
+    for v in G.nodes():
+        if W[v] > 0: node_color.append((1,0.2,0.2,0.8))
+        else: node_color.append((0.8,0.8,0.8,0.8))
+    nx.draw(G, pos, labels=W, node_color=node_color)
+
+    plt.subplot(1, 2, 2)
+    G = whitney_flip_pair(var=1)
+    W = weierstrass_locus(G)
+    # pos = nx.kamada_kawai_layout(G, dim=2)
+    pos = nx.spring_layout(G, iterations=500)
+    node_color = []
+    for v in G.nodes():
+        if W[v] > 0: node_color.append((1,0.2,0.2,0.8))
+        else: node_color.append((0.8,0.8,0.8,0.8))
+    nx.draw(G, pos, labels=W, node_color=node_color)
+
+    plt.show()
+
 def run_random_cubic_ex(g=22, seed=None):
     # set random seed
     if seed is not None:
@@ -337,8 +392,9 @@ def create_2d_plot(G, labels, node_color):
 if __name__ ==  "__main__":
     # run_frucht_3d(var=0)
     # run_random_cubic_ex(g=8)
-    run_random_cubic_collage_ex(g=72, seed=42)
+    # run_random_cubic_collage_ex(g=13, seed=42)
     # run_frucht_example(var=0)
+    run_whitney_flip_ex()
 
     ## WARNING: bug in output of the following:
     # run_random_cubic_collage_ex(g=7, seed=120)
