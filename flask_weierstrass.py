@@ -4,9 +4,7 @@ from flask import (
     request,
 )
 import json
-import numpy as np
 import networkx as nx
-# from networkx import Graph
 
 from reduce import reduce_canonical
 
