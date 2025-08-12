@@ -64,6 +64,7 @@ function buildEdgeList() {
 function updateGraph(json, q_id) {
     // debug
     // console.log(visjs_nodes)
+    n_nodes = visjs_nodes.length
     for (const id in json) {
         const m = json[id];
         const idx = parseInt(id);
@@ -75,7 +76,7 @@ function updateGraph(json, q_id) {
             // console.log("node found: " + id)
             node.label = String(m);
             if (idx == q_id) {
-                if (m > 6) {
+                if (m > n_nodes / 2) {
                     node.color = {
                         border: "DarkGray",
                         background: "red",
@@ -83,7 +84,7 @@ function updateGraph(json, q_id) {
                 } else {
                     node.color = {
                         border: "DarkGray",
-                        background: "orange",
+                        background: "yellow",
                     };    
                 }
             } else if (m > 0) {
@@ -161,7 +162,7 @@ function handleSelectionChange() {
         const id = params.nodes[0]
         // colorNode(id);
         reducedDiv(id);
-      });
+    });
 
 
 })

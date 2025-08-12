@@ -132,7 +132,7 @@ def run_whitney_flip_ex():
     G = whitney_flip_pair(var=0)
     W = weierstrass_locus(G)
     # pos = nx.kamada_kawai_layout(G, dim=2)
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, iterations=500)
     node_color = []
     for v in G.nodes():
         if W[v] > 0: node_color.append((1,0.2,0.2,0.8))

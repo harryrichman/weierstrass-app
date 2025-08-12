@@ -25,9 +25,6 @@
     
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <!-- <script src="https://unpkg.com/force-graph@1.43.4/dist/force-graph.min.js"></script>
-    <script src="https://unpkg.com/d3-force@3.0.0/dist/d3-force.min.js"></script> -->
-
     <script
       type="text/javascript"
       src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
@@ -61,6 +58,7 @@
                   border: "#ff0000",
                 },
               },
+              chosen: false,
             },
             edges: {
               color: "null",
@@ -118,8 +116,11 @@
     <!-- P8 interactive standard form -->
     <div class="interactive">
       Enter an adjacency matrix of a connected graph.  
+      <br />
+      <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
+          >[[0,1,1,0],[1,0,1,1],[1,1,0,1],[0,1,1,0]]</textarea>
       <p>
-        <label for="P8-input-V">Enter vertices of \(G\)</label></br>
+        <!-- <label for="P8-input-V">Enter vertices of \(G\)</label></br>
         <input id="P8-input-V" type="text" class="interactive-input" size="50" value="1, 2, 3, 4, 5, 6, 7, 8">
       </p>
       <div>
@@ -127,16 +128,11 @@
 
         <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
             >(1, 2), (2, 3), (1, 4), (4, 3), (1, 5), (3, 7), (5, 6), (6, 7), (5, 8), (8, 7)</textarea>
-      </div>
+      </div> -->
       <button id="P8-submit" class="py-button" type="submit" py-click="p8()">Submit data</button>
       <div id="P8-output" class="interactive-output hidden"></div>
     </div>
 
-    <section>
-        <div id="mpl-graph">
-        </div>
-    </section>
-
-
+    
   </body>
 </html>
