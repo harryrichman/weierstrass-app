@@ -8,6 +8,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+LIGHT_RED = (1,0.2,0.2,0.8)
+LIGHT_GRAY = (0.8,0.8,0.8,0.8)
+
 def tent_graph():
     G = nx.Graph()
     G.add_nodes_from(['a','b','c','ab','ac1','ac2',
@@ -135,8 +138,8 @@ def run_whitney_flip_ex():
     pos = nx.spring_layout(G, iterations=500)
     node_color = []
     for v in G.nodes():
-        if W[v] > 0: node_color.append((1,0.2,0.2,0.8))
-        else: node_color.append((0.8,0.8,0.8,0.8))
+        if W[v] > 0: node_color.append(LIGHT_RED)
+        else: node_color.append(LIGHT_GRAY)
     nx.draw(G, pos, labels=W, node_color=node_color)
 
     plt.subplot(1, 2, 2)
@@ -146,8 +149,8 @@ def run_whitney_flip_ex():
     pos = nx.spring_layout(G, iterations=500)
     node_color = []
     for v in G.nodes():
-        if W[v] > 0: node_color.append((1,0.2,0.2,0.8))
-        else: node_color.append((0.8,0.8,0.8,0.8))
+        if W[v] > 0: node_color.append(LIGHT_RED)
+        else: node_color.append(LIGHT_GRAY)
     nx.draw(G, pos, labels=W, node_color=node_color)
 
     plt.show()
@@ -188,7 +191,6 @@ def random_cubic_graph(g=22):
 
 def run_tent_example():
     G = tent_graph()
-    # G = nx.frucht_graph()
     W = weierstrass_locus(G)
 
     print(W)
@@ -223,6 +225,23 @@ def run_loop_of_loops_example():
     plt.show()
 
 def run_frucht_example(var=0):
+    G = frucht_graph(var=var)
+    W = weierstrass_locus(G)
+
+    node_color = []
+    for v in G.nodes():
+        if W[v] > 0: node_color.append(LIGHT_RED)
+        else: node_color.append(LIGHT_GRAY)
+    options = {
+        "labels": W,
+        "node_color": node_color
+    }
+    pos = nx.spring_layout(G, seed=52)
+    nx.draw(G, pos, **options)
+    plt.show()
+
+
+def run_frucht_reduced_example(var=0):
     G = frucht_graph(var=var)
     # G = nx.random_geometric_graph(20, 0.225, seed=89)
 
@@ -263,6 +282,24 @@ def run_random_cubic_collage_ex(g=6, seed=None):
         plt.subplot(3, 4, i+1)
         (G, W, pos, node_color) = random_cubic_graph(g=g)
         nx.draw(G, pos, labels=W, node_color=node_color)
+    plt.show()
+
+def run_frucht_subdiv(var=0):
+    H = frucht_graph(var=var)
+    G = subdivide(H, 7)
+    W = weierstrass_locus(G)
+    node_color = []
+    for v in G.nodes():
+        if W[v] > 0: node_color.append(LIGHT_RED)
+        else: node_color.append(LIGHT_GRAY)
+    options = {
+        "labels": W,
+        "node_color": node_color
+    }
+
+    pos_H = nx.spring_layout(H, seed=52)
+    pos = nx.spring_layout(G, k=0.005, pos=pos_H, fixed=pos_H.keys(), iterations=300)
+    nx.draw(G, pos, **options)
     plt.show()
 
 def run_frucht_3d(var=0):
@@ -390,11 +427,13 @@ def create_2d_plot(G, labels, node_color):
     plt.show()
 
 if __name__ ==  "__main__":
+    # run_frucht_example()
+    # run_frucht_subdiv()
     # run_frucht_3d(var=0)
     # run_random_cubic_ex(g=8)
-    # run_random_cubic_collage_ex(g=13, seed=42)
-    # run_frucht_example(var=0)
-    run_whitney_flip_ex()
+    run_random_cubic_collage_ex(g=24, seed=42)
+    # run_frucht_reduced_example(var=0)
+    # run_whitney_flip_ex()
 
     ## WARNING: bug in output of the following:
     # run_random_cubic_collage_ex(g=7, seed=120)
