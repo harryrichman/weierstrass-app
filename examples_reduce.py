@@ -431,7 +431,8 @@ if __name__ ==  "__main__":
     # run_frucht_subdiv()
     # run_frucht_3d(var=0)
     # run_random_cubic_ex(g=8)
-    run_random_cubic_collage_ex(g=24, seed=42)
+    run_random_cubic_ex(g=26)
+    # run_random_cubic_collage_ex(g=24, seed=42)
     # run_frucht_reduced_example(var=0)
     # run_whitney_flip_ex()
 
