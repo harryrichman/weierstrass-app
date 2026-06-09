@@ -56,6 +56,12 @@
                   'border-width': 1,
                   'width': 12,
                   'height': 12,
+                  'label': 'data(label)',
+                  'font-size': 10,
+                  'text-valign': 'center',
+                  'text-halign': 'right',
+                  'text-margin-x': 4,
+                  'color': '#333',
                 }
               },
               {
@@ -131,7 +137,8 @@
         const elements = graphMap[dropdown.value];
         if (!elements) return;
 
-        cy.json({ elements: elements });
+        cy.elements().remove();
+        cy.add(elements);
         cy.layout({ name: 'cose', animate: false }).run();
       }
     </script>
