@@ -114,8 +114,8 @@
           >[[0,1,1,0],[1,0,1,1],[1,1,0,1],[0,1,1,0]]</textarea>
       <p>
 
-      <button id="P8-submit" class="py-button" type="submit" py-click="p8()">Submit data</button>
-      <div id="P8-output" class="interactive-output hidden"></div>
+      <button id="P8-submit" class="py-button" type="button" onclick="loadAdjacencyMatrix()">Submit data</button>
+      <div id="P8-output" class="interactive-output"></div>
     </div>
 
 
@@ -140,6 +140,61 @@
         cy.elements().remove();
         cy.add(elements);
         cy.layout({ name: 'cose', animate: false }).run();
+      }
+
+      function loadAdjacencyMatrix() {
+        const statusEl = document.getElementById('P8-output');
+        let matrix;
+
+        // Parse the input
+        try {
+          matrix = JSON.parse(document.getElementById('P8-input-E').value);
+        } catch (e) {
+          statusEl.textContent = 'Error: invalid JSON. Please enter a valid matrix, e.g. [[0,1],[1,0]]';
+          return;
+        }
+
+        // Validate: must be a square 2D array of 0s and 1s with a symmetric structure
+        const n = matrix.length;
+        if (!Array.isArray(matrix) || n === 0) {
+          statusEl.textContent = 'Error: matrix must be a non-empty array.';
+          return;
+        }
+        for (let i = 0; i < n; i++) {
+          if (!Array.isArray(matrix[i]) || matrix[i].length !== n) {
+            statusEl.textContent = `Error: row ${i} has wrong length — matrix must be square (${n}×${n}).`;
+            return;
+          }
+          for (let j = 0; j < n; j++) {
+            if (matrix[i][j] !== matrix[j][i]) {
+              statusEl.textContent = `Error: matrix is not symmetric at [${i}][${j}].`;
+              return;
+            }
+          }
+        }
+
+        // Build Cytoscape elements from the upper triangle of the matrix
+        const elements = [];
+        for (let i = 0; i < n; i++) {
+          elements.push({ data: { id: String(i + 1), label: String(i + 1) } });
+        }
+        let edgeIdx = 0;
+        for (let i = 0; i < n; i++) {
+          for (let j = i + 1; j < n; j++) {
+            if (matrix[i][j]) {
+              elements.push({ data: {
+                id: 'e' + edgeIdx++,
+                source: String(i + 1),
+                target: String(j + 1),
+              }});
+            }
+          }
+        }
+
+        cy.elements().remove();
+        cy.add(elements);
+        cy.layout({ name: 'cose', animate: false }).run();
+        statusEl.textContent = `Loaded: ${n} vertices, ${edgeIdx} edges.`;
       }
     </script>
 
