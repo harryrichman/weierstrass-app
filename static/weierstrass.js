@@ -58,7 +58,10 @@ function buildEdgeList() {
 }
 
 function updateGraph(json, q_id) {
+    // update colors of graph nodes, based on weierstrass weight
     const n_nodes = cy.nodes().length;
+    const n_edges = cy.edges().length;
+    const genus = n_edges - n_nodes + 1
     for (const id in json) {
         const m = json[id];
         const idx = parseInt(id);
@@ -68,7 +71,7 @@ function updateGraph(json, q_id) {
         } else {
             node.data('label', String(m));
             if (idx == q_id) {
-                if (m > n_nodes / 2) {
+                if (m >= genus) {
                     node.style({ 'background-color': 'red',    'border-color': 'DarkGray' });
                 } else {
                     node.style({ 'background-color': 'yellow', 'border-color': 'DarkGray' });
