@@ -4,19 +4,18 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://harryrichman.github.io/main.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <!-- <script src="../weierstrass.js"></script> -->
     <script src="{{ url_for('static', filename='graph_data.js') }}"></script>
     <script src="{{ url_for('static', filename='weierstrass.js') }}" defer></script>
     <style>
         #force-graph {
             width: 600px;
             border: 1px solid;
-            /* border-color: black; */
         }
-        #visjs-network {
+        #cy {
           width: 600px;
           height: 400px;
           border: 1px solid;
+          background: #fff;
         }
         label {
             display: block;
@@ -25,10 +24,8 @@
     
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
-    ></script>
+    <!-- Cytoscape.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.29.2/cytoscape.min.js"></script>
 
   </head>
   <body>
@@ -42,61 +39,51 @@
     </p>
 
     <section>
-      
-        <div id="visjs-network"></div>
+
+        <div id="cy"></div>
+
         <script type="text/javascript">
-    
-          var options = {
-            nodes: {
-              shape: "dot",
-              size: 6,
-              color: {
-                border: "DarkGray",
-                background: "LightGray",
-                highlight: {
-                  background: "#ff8888",
-                  border: "#ff0000",
-                },
+
+          var cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: frucht_nodes.concat(frucht_edges),
+            style: [
+              {
+                selector: 'node',
+                style: {
+                  'background-color': 'LightGray',
+                  'border-color': 'DarkGray',
+                  'border-width': 1,
+                  'width': 12,
+                  'height': 12,
+                }
               },
-              chosen: false,
-            },
-            edges: {
-              color: "null",
-            },
-            interaction: { hover: true },
-            manipulation: {
-              enabled: true,
-              controlNodeStyle: {
-                shape:'dot',
-                size:6,
-                color: {
-                  background: '#000000',
-                  border: '#3c3c3c',
-                  highlight: {
-                    background: '#000000',
-                    border: '#3c3c3c'
-                  }
-                },
-                borderWidth: 2,
-                borderWidthSelected: 2
+              {
+                selector: 'node:selected',
+                style: {
+                  'background-color': '#ff8888',
+                  'border-color': '#ff0000',
+                }
               },
+              {
+                selector: 'edge',
+                style: {
+                  'line-color': '#999',
+                  'width': 1,
+                  'curve-style': 'bezier',
+                }
+              }
+            ],
+            layout: {
+              name: 'cose',
+              animate: false,
             },
-          };
-    
-          // create a network
-          var container = document.getElementById("visjs-network");
+            userZoomingEnabled: true,
+            userPanningEnabled: true,
+          });
 
-          var visjs_nodes = new vis.DataSet(frucht_nodes);
-          var visjs_edges = new vis.DataSet(frucht_edges);
-          var visjs_data = {
-            nodes: visjs_nodes,
-            edges: visjs_edges,
-          };
-          var network = new vis.Network(container, visjs_data, options);
-
-
-      </script>
-    </section>      
+        </script>
+    </section>
 
     <div>
       <label for="graph-dropdown">Choose a graph:</label>
@@ -112,7 +99,7 @@
       <p id="output"></p>
   
     </div>
-    
+
     <!-- P8 interactive standard form -->
     <div class="interactive">
       Enter an adjacency matrix of a connected graph.  
@@ -120,19 +107,35 @@
       <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
           >[[0,1,1,0],[1,0,1,1],[1,1,0,1],[0,1,1,0]]</textarea>
       <p>
-        <!-- <label for="P8-input-V">Enter vertices of \(G\)</label></br>
-        <input id="P8-input-V" type="text" class="interactive-input" size="50" value="1, 2, 3, 4, 5, 6, 7, 8">
-      </p>
-      <div>
-        <label for="P8-input-E">Enter edges of \(G\)</label>
 
-        <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
-            >(1, 2), (2, 3), (1, 4), (4, 3), (1, 5), (3, 7), (5, 6), (6, 7), (5, 8), (8, 7)</textarea>
-      </div> -->
       <button id="P8-submit" class="py-button" type="submit" py-click="p8()">Submit data</button>
       <div id="P8-output" class="interactive-output hidden"></div>
     </div>
 
-    
+
+    <script type="text/javascript">
+      function handleSelectionChange() {
+        const dropdown = document.getElementById('graph-dropdown');
+        const output = document.getElementById('output');
+        output.textContent = `You selected: ${dropdown.options[dropdown.selectedIndex].text}`;
+
+        const graphMap = {
+          'frucht':         frucht_nodes.concat(frucht_edges),
+          'pappus':         pappus_nodes.concat(pappus_edges),
+          'triangle-prism': triangle_prism_nodes.concat(triangle_prism_edges),
+          'franklin':       franklin_nodes.concat(franklin_edges),
+          'durer':          durer_nodes.concat(durer_edges),
+          'bidiakis':       bidiakis_nodes.concat(bidiakis_edges),
+        };
+
+        const elements = graphMap[dropdown.value];
+        if (!elements) return;
+
+        cy.json({ elements: elements });
+        cy.layout({ name: 'cose', animate: false }).run();
+      }
+    </script>
+
+    </div>
   </body>
 </html>

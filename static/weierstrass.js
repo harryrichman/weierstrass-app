@@ -8,27 +8,24 @@ function weierstrassLocus(graph) {
 // Compute reduced divisors
 
 function reducedDiv(id) {
-    adj = buildEdgeList()
-    // debugging
-    // console.log("adj: " + adj)
+    adj = buildEdgeList();
     $.ajax({
         method: "POST",
         url: "get-reduced-div",
         data: {
-            adj: adj, // list of edges
-            base_v: id, // index of base point
+            adj: adj,     // list of edges
+            base_v: id,   // index of base point
         },
         dataType: "json",
         success: function(json) {
-            // console.log(json);
             updateGraph(json, id);
         }
-    })
+    });
 }
 
 function canonicalDiv(graph) {
     // graph is an Object with nodes and links attributes
-    var degrees = {}
+    var degrees = {};
     for (i = 0; i < graph.nodes.length; i++) {
         const id = graph.nodes[i].id;
         degrees[id] = 0;
@@ -41,128 +38,61 @@ function canonicalDiv(graph) {
         degrees[t] += 1;
     }
     for (i = 0; i < graph.nodes.length; i++) {
-        // const id = graph.nodes[i]["id"];
-        // graph.nodes[i]["canonical_div"] = degrees[id] - 2;
         const node = graph.nodes[i];
         node["canonical_div"] = degrees[node["id"]] - 2;
     }
 }
 
-// utility 
 
+// Utility
 
 function buildEdgeList() {
-    edges = Object.values(network.body.edges).map(x => [x.fromId, x.toId]);
-    // console.log("edges: ")
-    // console.log(edges)
-    edgeString = JSON.stringify(edges);
-    // console.log("edgeString: " + edgeString)
+    // cy is the global Cytoscape instance defined in index.html
+    const edges = cy.edges().map(e => [
+        parseInt(e.data('source')),
+        parseInt(e.data('target')),
+    ]);
+    const edgeString = JSON.stringify(edges);
     $('#edgejson').text(edgeString);
     return edgeString;
 }
 
 function updateGraph(json, q_id) {
-    // debug
-    // console.log(visjs_nodes)
-    n_nodes = visjs_nodes.length
+    const n_nodes = cy.nodes().length;
     for (const id in json) {
         const m = json[id];
         const idx = parseInt(id);
-        var node = visjs_nodes.get(idx);
-        if (node === null) {
-            // console.log("node " + id + " not found");
-        }
-        else {
-            // console.log("node found: " + id)
-            node.label = String(m);
+        const node = cy.$id(String(idx));
+        if (node.length === 0) {
+            // node not found, skip
+        } else {
+            node.data('label', String(m));
             if (idx == q_id) {
                 if (m > n_nodes / 2) {
-                    node.color = {
-                        border: "DarkGray",
-                        background: "red",
-                    };    
+                    node.style({ 'background-color': 'red',    'border-color': 'DarkGray' });
                 } else {
-                    node.color = {
-                        border: "DarkGray",
-                        background: "yellow",
-                    };    
+                    node.style({ 'background-color': 'yellow', 'border-color': 'DarkGray' });
                 }
             } else if (m > 0) {
-                node.color = {
-                    background: "yellow",
-                }
+                node.style({ 'background-color': 'yellow' });
             }
-            visjs_nodes.update(node);    
         }
     }
 }
 
 function defaultColors() {
-    // console.log("running default colors fn")
-    for (let i = 1; i <= visjs_nodes.length; i++) {
-        var node = visjs_nodes.get(i);
-        node.color = {
-            border: "DarkGray",
-            background: "LightGray",
-        };
-        node.label = "0";
-        visjs_nodes.update(node);
-    }
+    cy.nodes().forEach(function(node) {
+        node.style({ 'background-color': 'LightGray', 'border-color': 'DarkGray' });
+        node.data('label', '0');
+    });
 }
 
-function handleSelectionChange() {
-    // Get the selected value from the dropdown
-    const dropdown = document.getElementById('graph-dropdown');
-    // const selectedValue = dropdown.value;
 
-    // Display the selected value in the output paragraph
-    const output = document.getElementById('output');
-    output.textContent = `You selected: ${dropdown.options[dropdown.selectedIndex].text}`;
-
-    if (dropdown.value) {
-        visjs_nodes.clear();
-        visjs_edges.clear();
-
-    }
-    if (dropdown.value == "triangle-prism") {
-        visjs_nodes.add(tri_prism_nodes);
-        visjs_edges.add(tri_prism_edges);
-    } else if (dropdown.value == "frucht") {
-        visjs_nodes.add(frucht_nodes);
-        visjs_edges.add(frucht_edges);
-    } else if (dropdown.value == "pappus") {
-        visjs_nodes.add(pappus_nodes);
-        visjs_edges.add(pappus_edges);
-    } else if (dropdown.value == "franklin") {
-        visjs_nodes.add(franklin_nodes);
-        visjs_edges.add(franklin_edges);
-    } else if (dropdown.value == "durer") {
-        visjs_nodes.add(durer_nodes);
-        visjs_edges.add(durer_edges);
-    } else if (dropdown.value == "bidiakis") {
-        visjs_nodes.add(bidiakis_nodes);
-        visjs_edges.add(bidiakis_edges);
-    }
-}
-
-// function colorNode(id) {
-//     var selected_node = visjs_nodes.get(id)
-//     selected_node.color = {
-//       border: "red",
-//       background: "red",
-//     }
-//     selected_node.label = "1",
-//     visjs_nodes.update(selected_node)
-// }
-
-  $(document).ready(function() {
-    network.on("selectNode", function (params) {
-        console.log("selectNode Event:", params);
+$(document).ready(function() {
+    cy.on('tap', 'node', function(evt) {
+        const id = parseInt(evt.target.id());
+        console.log("tap node:", id);
         defaultColors();
-        const id = params.nodes[0]
-        // colorNode(id);
         reducedDiv(id);
     });
-
-
-})
+});
