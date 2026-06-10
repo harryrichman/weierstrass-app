@@ -85,15 +85,7 @@
             userPanningEnabled: true,
           });
 
-          
-          $(document).ready(function() {
-              cy.on('tap', 'node', function(evt) {
-                  const id = parseInt(evt.target.id());
-                  console.log("tap node:", id);
-                  defaultColors();
-                  reducedDiv(id);
-              });
-          });
+
         </script>
     </section>
 
@@ -102,13 +94,13 @@
         <legend>Select mode</legend>
         <div>
         <label for="reduce-div">
-          <input type="radio" id="reduce-div" name="mode" value="reduce-div-mode" checked>
+          <input type="radio" id="reduce-div" name="mode" value="reduce-div-mode" checked onchange="handleModeChange()">
           Explore reduced divisors
         </label>
         </div>
         <div>
           <label for="weierstrass">
-            <input type="radio" id="weierstrass" name="mode" value="weierstrass-mode">
+            <input type="radio" id="weierstrass" name="mode" value="weierstrass-mode" onchange="handleModeChange()">
             Show Weierstrass locus
           </label>
 
@@ -174,7 +166,14 @@
 
     <script type="text/javascript">
       function handleModeChange() {
-        // pass;
+        const mode = document.querySelector('input[name="mode"]:checked').value;
+        if (mode === 'weierstrass-mode') {
+          defaultColors();
+          weierstrassLocus();
+        } else {
+          // Switching back to reduced divisor mode: reset to default state
+          defaultColors();
+        }
       };
 
       function handleSelectionChange() {

@@ -94,6 +94,21 @@ function updateGraph(json, q_id) {
     }
 }
 
+function updateGraphWeierstrass(json) {
+    for (const id in json) {
+        const m = json[id];
+        const node = cy.$id(String(id));
+        if (node.length === 0) continue;
+        node.data('label', String(m));
+        if (m >= 1) {
+            node.style({ 'background-color': 'red', 'border-color': 'DarkGray' });
+        } else {
+            node.style({ 'background-color': 'LightGray', 'border-color': 'DarkGray' });
+        }
+    }
+}
+
+
 function defaultColors() {
     cy.nodes().forEach(function(node) {
         node.style({ 'background-color': 'LightGray', 'border-color': 'DarkGray' });
@@ -101,3 +116,14 @@ function defaultColors() {
     });
 }
 
+
+$(document).ready(function() {
+    cy.on('tap', 'node', function(evt) {
+        const mode = document.querySelector('input[name="mode"]:checked').value;
+        if (mode !== 'reduce-div-mode') return;
+        const id = parseInt(evt.target.id());
+        console.log("tap node:", id);
+        defaultColors();
+        reducedDiv(id);
+    });
+});
