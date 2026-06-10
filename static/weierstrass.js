@@ -2,6 +2,11 @@
 
 function weierstrassLocus(graph) {
     // pass
+    $.ajax({
+        method: "POST",
+        url: "get-w-locus",
+        data: {},
+    });
 }
 
 

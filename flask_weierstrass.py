@@ -2,6 +2,7 @@ from flask import (
     Flask,
     render_template,
     request,
+    jsonify,
 )
 import json
 import networkx as nx
@@ -33,3 +34,21 @@ def get_weierstrass_div():
 
     w_divisor = weierstrass_locus(G)
     return json.dumps(w_divisor)
+
+@app.route("/random-cubic", methods=["POST"])
+def random_cubic():
+    data = request.get_json()
+    n = data.get("n")
+
+    if not isinstance(n, int) or n < 4 or n % 2 != 0:
+        return jsonify({"error": "n must be an even integer >= 4"}), 400
+
+    try:
+        G = nx.random_regular_graph(3, n)
+    except nx.NetworkXError as e:
+        return jsonify({"error": str(e)}), 400
+
+    return jsonify({
+        "nodes": list(G.nodes()),
+        "edges": list(G.edges()),
+    })

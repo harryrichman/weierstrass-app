@@ -7,15 +7,12 @@
     <script src="{{ url_for('static', filename='graph_data.js') }}"></script>
     <script src="{{ url_for('static', filename='weierstrass.js') }}" defer></script>
     <style>
-        #force-graph {
-            width: 600px;
-            border: 1px solid;
-        }
         #cy {
-          width: 600px;
-          height: 400px;
+          width: 800px;
+          height: 500px;
           border: 1px solid;
           background: #fff;
+          margin: 20px auto;
         }
         label {
             display: block;
@@ -91,32 +88,59 @@
         </script>
     </section>
 
-    <div>
-      <label for="graph-dropdown">Choose a graph:</label>
-      <select id="graph-dropdown" name="graphs" onchange="handleSelectionChange()">
-          <option value="frucht">Frucht graph</option>
-          <option value="pappus">Pappus graph</option>
-          <option value="triangle-prism">Triangle prism graph</option>
-          <option value="franklin">Franklin graph</option>
-          <option value="durer">Dürer graph</option>
-          <option value="bidiakis">Bidiakis cube graph</option>
-      </select>
+    <hr>
+
+    Choose a graph, in one of the following ways:
+
+    <ul>
+      <li>
+        <div>
+          <label for="graph-dropdown">Choose a named graph:</label>
+          <select id="graph-dropdown" name="graphs" onchange="handleSelectionChange()">
+              <option value="frucht">Frucht graph</option>
+              <option value="pappus">Pappus graph</option>
+              <option value="triangle-prism">Triangle prism graph</option>
+              <option value="franklin">Franklin graph</option>
+              <option value="trunc-tetrahedron">Truncated tetrahedron graph</option>
+              <option value="durer">Dürer graph</option>
+              <option value="bidiakis">Bidiakis cube graph</option>
+          </select>
+          
+          <p id="output"></p>
       
-      <p id="output"></p>
-  
-    </div>
+        </div>
 
-    <!-- P8 interactive standard form -->
-    <div class="interactive">
-      Enter an adjacency matrix of a connected graph.  
-      <br />
-      <textarea id="P8-input-E" class="interactive-input" rows="5" cols="50"
-          >[[0,1,1,0],[1,0,1,1],[1,1,0,1],[0,1,1,0]]</textarea>
-      <p>
+      </li>
+      <li>
+        <!-- Random cubic graph generator -->
+        <div class="interactive">
+          Generate a random cubic (3-regular) graph:
+          <br />
+          Number of vertices (even, ≥ 4):
+          <input id="cubic-n" type="number" value="10" min="4" step="2" style="width:60px;" />
+          <button id="cubic-submit" class="py-button" type="button" onclick="loadRandomCubic()">Generate</button>
+          <div id="cubic-output"></div>
+        </div>
 
-      <button id="P8-submit" class="py-button" type="button" onclick="loadAdjacencyMatrix()">Submit data</button>
-      <div id="P8-output" class="interactive-output"></div>
-    </div>
+      </li>
+      <li>
+        <!-- Adjaceny matrix input -->
+        <div class="interactive">
+          Enter the adjacency matrix of a connected graph:
+          <br />
+          <textarea id="adj-matrix-input-E" class="interactive-input" rows="5" cols="50"
+              >[[0,1,1,0],[1,0,1,1],[1,1,0,1],[0,1,1,0]]</textarea>
+          <p>
+
+          <button id="adj-matrix-submit" class="py-button" type="button" onclick="loadAdjacencyMatrix()">Submit data</button>
+          <div id="adj-matrix-output" class="interactive-output"></div>
+        </div>
+
+
+      </li>
+    </ul>
+
+
 
 
     <script type="text/javascript">
@@ -130,6 +154,7 @@
           'pappus':         pappus_nodes.concat(pappus_edges),
           'triangle-prism': triangle_prism_nodes.concat(triangle_prism_edges),
           'franklin':       franklin_nodes.concat(franklin_edges),
+          'trunc-tetrahedron': trunc_tetrahedron_nodes.concat(trunc_tetrahedron_edges),
           'durer':          durer_nodes.concat(durer_edges),
           'bidiakis':       bidiakis_nodes.concat(bidiakis_edges),
         };
@@ -142,13 +167,49 @@
         cy.layout({ name: 'cose', animate: false }).run();
       }
 
+      function loadRandomCubic() {
+        const statusEl = document.getElementById('cubic-output');
+        const n = parseInt(document.getElementById('cubic-n').value);
+
+        if (isNaN(n) || n < 4 || n % 2 !== 0) {
+          statusEl.textContent = 'Error: number of vertices must be an even integer ≥ 4.';
+          return;
+        }
+
+        statusEl.textContent = 'Generating…';
+        $.ajax({
+          method: 'POST',
+          url: 'random-cubic',
+          contentType: 'application/json',
+          data: JSON.stringify({ n: n }),
+          dataType: 'json',
+          success: function(json) {
+            const elements = json.nodes.map(v => ({
+              data: { id: String(v + 1), label: String(v + 1) }
+            })).concat(json.edges.map(([u, v], i) => ({
+              data: { id: 'e' + i, source: String(u + 1), target: String(v + 1) }
+            })));
+            cy.elements().remove();
+            cy.add(elements);
+            cy.layout({ name: 'cose', animate: false }).run();
+            statusEl.textContent = `Generated: ${json.nodes.length} vertices, ${json.edges.length} edges.`;
+          },
+          error: function(xhr) {
+            const msg = xhr.responseJSON && xhr.responseJSON.error
+              ? xhr.responseJSON.error
+              : xhr.statusText;
+            statusEl.textContent = `Error: ${msg}`;
+          },
+        });
+      }
+
       function loadAdjacencyMatrix() {
-        const statusEl = document.getElementById('P8-output');
+        const statusEl = document.getElementById('adj-matrix-output');
         let matrix;
 
         // Parse the input
         try {
-          matrix = JSON.parse(document.getElementById('P8-input-E').value);
+          matrix = JSON.parse(document.getElementById('adj-matrix-input-E').value);
         } catch (e) {
           statusEl.textContent = 'Error: invalid JSON. Please enter a valid matrix, e.g. [[0,1],[1,0]]';
           return;
