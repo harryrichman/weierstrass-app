@@ -85,8 +85,36 @@
             userPanningEnabled: true,
           });
 
+          
+          $(document).ready(function() {
+              cy.on('tap', 'node', function(evt) {
+                  const id = parseInt(evt.target.id());
+                  console.log("tap node:", id);
+                  defaultColors();
+                  reducedDiv(id);
+              });
+          });
         </script>
     </section>
+
+    <form>
+      <fieldset>
+        <legend>Select mode</legend>
+        <div>
+        <label for="reduce-div">
+          <input type="radio" id="reduce-div" name="mode" value="reduce-div-mode" checked>
+          Explore reduced divisors
+        </label>
+        </div>
+        <div>
+          <label for="weierstrass">
+            <input type="radio" id="weierstrass" name="mode" value="weierstrass-mode">
+            Show Weierstrass locus
+          </label>
+
+        </div>
+      </fieldset>
+    </form>
 
     <hr>
 
@@ -94,6 +122,7 @@
 
     <ul>
       <li>
+        <!-- Named graph selection -->
         <div>
           <label for="graph-dropdown">Choose a named graph:</label>
           <select id="graph-dropdown" name="graphs" onchange="handleSelectionChange()">
@@ -144,6 +173,10 @@
 
 
     <script type="text/javascript">
+      function handleModeChange() {
+        // pass;
+      };
+
       function handleSelectionChange() {
         const dropdown = document.getElementById('graph-dropdown');
         const output = document.getElementById('output');

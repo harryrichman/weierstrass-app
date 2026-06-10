@@ -31,6 +31,10 @@ def get_red_divisor():
 @app.route("/get-weierstrass-div", methods=["POST"])
 def get_weierstrass_div():
     app_data = request.form
+    # debugging
+    print("app_data: ", app_data)
+    edge_list = json.loads(app_data["adj"])
+    G = nx.Graph(edge_list)
 
     w_divisor = weierstrass_locus(G)
     return json.dumps(w_divisor)

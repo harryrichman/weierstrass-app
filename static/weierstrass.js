@@ -4,8 +4,14 @@ function weierstrassLocus(graph) {
     // pass
     $.ajax({
         method: "POST",
-        url: "get-w-locus",
-        data: {},
+        url: "get-weierstrass-div",
+        data: {
+            adj: adj, // list of edges
+        },
+        dataType: "json",
+        success: function(json) {
+            updateGraphWeierstrass(json);
+        }
     });
 }
 
@@ -95,12 +101,3 @@ function defaultColors() {
     });
 }
 
-
-$(document).ready(function() {
-    cy.on('tap', 'node', function(evt) {
-        const id = parseInt(evt.target.id());
-        console.log("tap node:", id);
-        defaultColors();
-        reducedDiv(id);
-    });
-});
