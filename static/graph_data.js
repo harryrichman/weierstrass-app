@@ -53,6 +53,103 @@ const frucht_edges = toCyEdges([
   { from: 11, to: 12 },
 ]);
 
+
+const frucht_like_1_nodes = toCyNodes(
+  Array.from({ length: 12 }, (_, i) => ({ id: i, title: `vertex ${i + 1}` }))
+);
+const frucht_like_1_edges = toCyEdges([
+  {from: 0, to: 1},
+  {from: 0, to: 6},
+  {from: 0, to: 10},
+  {from: 1, to: 2},
+  {from: 1, to: 7},
+  {from: 2, to: 3},
+  {from: 2, to: 7},
+  {from: 3, to: 4},
+  {from: 3, to: 8},
+  {from: 4, to: 5},
+  {from: 4, to: 9},
+  {from: 5, to: 6},
+  {from: 5, to: 11},
+  {from: 6, to: 11},
+  {from: 7, to: 8},
+  {from: 8, to: 9},
+  {from: 9, to: 10},
+  {from: 10, to: 11}
+]);
+
+const frucht_like_2_nodes = toCyNodes(
+  Array.from({ length: 12 }, (_, i) => ({ id: i, title: `vertex ${i + 1}` }))
+);
+const frucht_like_2_edges = toCyEdges([
+  {from: 0, to: 1},
+  {from: 0, to: 2},
+  {from: 0, to: 3},
+  {from: 1, to: 10},
+  {from: 1, to: 11},
+  {from: 2, to: 9},
+  {from: 2, to: 11},
+  {from: 3, to: 8},
+  {from: 3, to: 10},
+  {from: 4, to: 5},
+  {from: 4, to: 6},
+  {from: 4, to: 10},
+  {from: 5, to: 6},
+  {from: 5, to: 7},
+  {from: 6, to: 9},
+  {from: 7, to: 8},
+  {from: 7, to: 9},
+  {from: 8, to: 11}
+]);
+
+const frucht_like_3_nodes = toCyNodes(
+  Array.from({ length: 12 }, (_, i) => ({ id: i, title: `vertex ${i + 1}` }))
+);
+const frucht_like_3_edges = toCyEdges([
+  {from: 0, to: 1},
+  {from: 0, to: 6},
+  {from: 0, to: 10},
+  {from: 1, to: 2},
+  {from: 1, to: 7},
+  {from: 2, to: 3},
+  {from: 2, to: 7},
+  {from: 3, to: 4},
+  {from: 3, to: 11},
+  {from: 4, to: 5},
+  {from: 4, to: 8},
+  {from: 5, to: 6},
+  {from: 5, to: 9},
+  {from: 6, to: 11},
+  {from: 7, to: 8},
+  {from: 8, to: 9},
+  {from: 9, to: 10},
+  {from: 10, to: 11}
+]);
+
+const frucht_like_4_nodes = toCyNodes(
+  Array.from({ length: 12 }, (_, i) => ({ id: i, title: `vertex ${i + 1}` }))
+);
+const frucht_like_4_edges = toCyEdges([
+  {from: 0, to: 1},
+  {from: 0, to: 6},
+  {from: 0, to: 10},
+  {from: 1, to: 2},
+  {from: 1, to: 7},
+  {from: 2, to: 3},
+  {from: 2, to: 7},
+  {from: 3, to: 4},
+  {from: 3, to: 8},
+  {from: 4, to: 5},
+  {from: 4, to: 10},
+  {from: 5, to: 6},
+  {from: 5, to: 8},
+  {from: 6, to: 9},
+  {from: 7, to: 11},
+  {from: 8, to: 9},
+  {from: 9, to: 11},
+  {from: 10, to: 11}
+]);
+
 // ── Franklin ──────────────────────────────────────────────────────────────────
 const franklin_nodes = toCyNodes(
   Array.from({ length: 12 }, (_, i) => ({ id: i + 1, title: `vertex ${i + 1}` }))
